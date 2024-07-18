@@ -12,13 +12,16 @@ class Home extends StatefulWidget {
   }
 
 class _HomeState extends State<Home> {
+  bool isloading = true;
+  bool iserror = false;
+  String? errorm;
   List<DataModel> mylist = [
 
   ];
   Future<void> getPData() async {
     var response = await http.get(Uri.parse('https://dummyjson.com/products'));
     if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
+      try{  Map<String, dynamic> data = jsonDecode(response.body);
       List<dynamic> prolist = data['products'];
 
       for (Map<String, dynamic> item in prolist) {
@@ -26,15 +29,29 @@ class _HomeState extends State<Home> {
         DataModel p1 = DataModel.fromMapJson(item);
         mylist.add(p1);
       }
-
       setState(() {
-
+        isloading = false;
       });
-      print('success ${response.body}');
+      print('success ${response.body}');}
+      catch (e) {
+        print('error $e');
+        setState(() {
+          isloading = false;
+          iserror = true;
+          errorm = e.toString();
+        });
+      }
+
+
 
     } else {
       print('error ${response.statusCode}');
       print('error ${response.body}');
+      setState(() {
+        isloading = false;
+        iserror = true;
+        errorm = 'error ${response.statusCode}';
+      });
     }
   }
   @override
@@ -46,7 +63,30 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: GridView.builder(
+      body: isloading
+          ?  Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(color: Colors.red,),
+          SizedBox(height: 10,),
+          Text('Loading...'),
+        ],
+      )) :
+      iserror ?
+      Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error,
+              color: Colors.red,
+              size: 50,),
+            Text('Error: $errorm'),
+          ],
+        ) ,
+      )
+          : SafeArea(child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               mainAxisExtent: 400,
               crossAxisCount: 2,
