@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:api/Data/data_models/product_data_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 class Home extends StatefulWidget {
@@ -57,32 +58,34 @@ class _HomeState extends State<Home> {
 
               children: [
                 Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(color: Colors.white,border: Border.all(color: Colors.black)),
-                      width: 200,
-                      height: 250,
-                  margin: EdgeInsets.all(5),
-                  child: Image.network('${mylist[index].imageUrl}',fit: BoxFit.contain,),
+                    decoration: BoxDecoration(color: Colors.amberAccent,borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                    child: Expanded(child: Image.network('${mylist[index].imageUrl}', fit: BoxFit.contain,),)),
 
-                ),
                 Container(
                   decoration: BoxDecoration(color: Colors.black),
-                  height: 20,
+                  child: Padding(padding: EdgeInsets.all(8),
+                      child: Center(
+                        child: Text('${mylist[index].name}',
+                          style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold,),
+                          maxLines: 1,overflow: TextOverflow.clip,),
+                      )
+                      ),
+                ),
+                Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+                  child: Padding(padding: EdgeInsets.all(8),
+                  child: Text('${mylist[index].description}',maxLines: 2,overflow: TextOverflow.ellipsis,),
+                  ),
+                ),
+                Container(
+                  color: Colors.black,
                   width: double.infinity,
-
-                  child: Text('${mylist[index].name}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 15),maxLines: 1,),
-                ),
-                Container(
-                  decoration: BoxDecoration(color: Colors.black),
-                  height: 50,
-                  child: Text('${mylist[index].description}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal),maxLines: 2,),
-                ),
-                Container(
-                  decoration: BoxDecoration(color: Colors.black),
-                  height: 20,
-                  width: double.infinity,
-                  child: Text('price : ${mylist[index].price}',style: TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.bold),),
-                ),
+                  child: Center(
+                    child: Padding(padding: EdgeInsets.all(8),
+                      child: Text('price ${mylist[index].price} ',
+                        style:TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 20) ,) ,),
+                  ),
+                )
               ],
             );
 
